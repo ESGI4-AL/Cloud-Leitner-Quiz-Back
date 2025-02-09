@@ -18,6 +18,12 @@ import { GetCards } from './application/use-cases/get-cards.usecase';
       provide: 'UserRepository',
       useClass: InMemoryUserRepository,
     },
+    {
+      provide: GetCards,
+      useValue: {
+        execute: jest.fn(),
+      },
+    },
   ],
 })
 export class AppModule {}
