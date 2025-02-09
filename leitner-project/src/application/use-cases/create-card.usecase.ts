@@ -7,8 +7,8 @@ import { CardRepository } from "src/domain/repositories/card.repository";
 export class CreateCard {
 	constructor(@Inject("CardRepository") private readonly cardRepository: CardRepository) {}
 
-	async execute(question: string, answer: string, tag: string): Promise<Card> {
-		const newCard = new Card(question, answer, tag, Category.FIRST);
-		return this.cardRepository.save(newCard);
-	}
+	async execute(userId: string, question: string, answer: string, tag: string): Promise<Card> {
+    const newCard = Card.create(userId, question, answer, tag);
+    return this.cardRepository.save(newCard);
+  }
 }
