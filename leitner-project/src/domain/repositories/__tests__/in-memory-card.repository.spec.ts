@@ -12,12 +12,13 @@ describe('InMemoryCardRepository', () => {
 
   describe('save', () => {
     it('should save a card and generate an id', async () => {
-      const card = new Card(
-        'What is pair programming?',
-        'A practice where two developers work on the same computer.',
-        'Teamwork',
-        Category.FIRST
-      );
+	  const card = new Card(
+		undefined,
+		'What is pair programming?',
+		'A practice where two developers work on the same computer.',
+		'Teamwork',
+		Category.FIRST
+	  );
 
       const savedCard = await repository.save(card);
 
@@ -31,19 +32,21 @@ describe('InMemoryCardRepository', () => {
 
     describe('findAll', () => {
 			it('should return empty array when no cards exist', async () => {
-				const cards = await repository.findAll();
+				const cards = await repository.findAllCards();
 
 				expect(cards).toEqual([]);
 			});
 
 			it('should return all saved cards', async () => {
 				const card1 = new Card(
+					undefined,
 					'Question 1',
 					'Answer 1',
 					'Tag1',
 					Category.FIRST
 				);
 				const card2 = new Card(
+					undefined,
 					'Question 2',
 					'Answer 2',
 					'Tag2',
@@ -52,7 +55,7 @@ describe('InMemoryCardRepository', () => {
 
 				await repository.save(card1);
 				await repository.save(card2);
-				const cards = await repository.findAll();
+				const cards = await repository.findAllCards();
 
 				expect(cards).toHaveLength(2);
 				expect(cards).toContain(card1);

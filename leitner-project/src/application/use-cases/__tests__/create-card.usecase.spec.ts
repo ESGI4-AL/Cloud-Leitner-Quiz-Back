@@ -33,13 +33,20 @@ describe('CreateCard', () => {
     const question = 'What is pair programming?';
     const answer = 'A practice where two developers work on the same computer.';
     const tag = 'Teamwork';
+    const userId = 'default-user-id';
 
-    const expectedCard = new Card(question, answer, tag, Category.FIRST);
+    const expectedCard = new Card(userId, question, answer, tag, Category.FIRST);
     (cardRepository.save as jest.Mock).mockResolvedValue(expectedCard);
 
-    const result = await createCard.execute(question, answer, tag);
+    const result = await createCard.execute(userId, question, answer, tag);
 
-    expect(cardRepository.save).toHaveBeenCalledWith(expectedCard);
+    expect(cardRepository.save).toHaveBeenCalledWith(expect.objectContaining({
+      question,
+      answer,
+      tag,
+      category: Category.FIRST,
+      userId
+    }));
     expect(result).toEqual(expectedCard);
   });
 });

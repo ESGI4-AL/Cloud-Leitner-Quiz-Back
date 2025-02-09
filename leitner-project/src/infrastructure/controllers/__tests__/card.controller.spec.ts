@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateCard } from 'src/application/use-cases/create-card.usecase';
+import { GetCards } from 'src/application/use-cases/get-cards.usecase';
 import { Card } from 'src/domain/entities/card.entity';
 import { Category } from 'src/domain/entities/category.enum';
 import { CardController } from '../card.controller';
@@ -18,6 +19,12 @@ describe('CardController', () => {
             execute: jest.fn(),
           },
         },
+        {
+          provide: GetCards,
+          useValue: {
+            execute: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -27,6 +34,7 @@ describe('CardController', () => {
 
   describe('createCard', () => {
     it('should create a new card', async () => {
+      const DEFAULT_USER_ID = 'default-user-id';
       const body = {
         question: 'What is pair programming?',
         answer: 'A practice where two developers work on the same computer.',
@@ -34,6 +42,8 @@ describe('CardController', () => {
       };
 
       const expectedCard = new Card(
+        undefined,
+        DEFAULT_USER_ID,
         body.question,
         body.answer,
         body.tag,
@@ -45,6 +55,7 @@ describe('CardController', () => {
       const result = await controller.createCard(body);
 
       expect(createCardUseCase.execute).toHaveBeenCalledWith(
+        DEFAULT_USER_ID,
         body.question,
         body.answer,
         body.tag
