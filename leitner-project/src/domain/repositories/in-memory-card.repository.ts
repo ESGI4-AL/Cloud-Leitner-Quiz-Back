@@ -11,7 +11,14 @@ export class InMemoryCardRepository implements CardRepository {
 		return card;
 	}
 
-	async findAll(): Promise<Card[]> {
+	async findAllCards(): Promise<Card[]> {
 		return this.cards;
 	}
+
+	async findByTags(tags: string[]): Promise<Card[]> {
+    return this.cards.filter(card =>
+      card.tag && tags.includes(card.tag)
+    );
+  }
+
 }
