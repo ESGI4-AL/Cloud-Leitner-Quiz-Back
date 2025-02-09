@@ -1,12 +1,15 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Post, Query } from "@nestjs/common";
 import { CreateCard } from "src/application/use-cases/create-card.usecase";
 import { GetCards } from "src/application/use-cases/get-cards.usecase";
+import { GetQuizz } from "src/application/use-cases/get-quizz.usecase";
+import { Card } from "src/domain/entities/card.entity";
 
 @Controller('cards')
 export class CardController {
 	constructor(
     private readonly createCardUseCase: CreateCard,
     private readonly getCardsUseCase: GetCards,
+    private readonly getQuizzUseCase: GetQuizz
   ) {}
 
 	@Post()
@@ -21,4 +24,28 @@ export class CardController {
     return this.getCardsUseCase.execute(tagArray);
   }
 
+  @Get('quizz')
+  async getQuizz(@Query('date') dateStr?: string): Promise<Card[]> {
+    let date: Date | undefined;
+
+    if (dateStr) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        throw new BadRequestException('Invalid date format. Use YYYY-MM-DD');
+      }
+
+      date = new Date(dateStr);
+      if (isNaN(date.getTime())) {
+        throw new BadRequestException('Invalid date');
+      }
+    }
+
+    try {
+      return await this.getQuizzUseCase.execute(date);
+    } catch (error) {
+      if (error.message === 'You can only take one quiz per day') {
+        throw new BadRequestException(error.message);
+      }
+      throw new InternalServerErrorException('Failed to get quiz cards');
+    }
+  }
 }

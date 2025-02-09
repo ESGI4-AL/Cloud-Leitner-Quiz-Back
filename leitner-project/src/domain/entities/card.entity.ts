@@ -9,6 +9,7 @@ export class Card {
 		public answer: string,
 		public tag: string,
 		public category: Category = Category.FIRST,
+		public createdAt: Date = new Date()
 	) {}
 
 	static create(userId: string, question: string, answer: string, tag: string): Card {
