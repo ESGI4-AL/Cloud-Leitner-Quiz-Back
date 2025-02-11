@@ -21,6 +21,7 @@ describe('GetCards', () => {
       findCardsDueForDate: jest.fn(),
       getLastQuizDate: jest.fn(),
       saveQuizDate: jest.fn(),
+      hasQuizBeenTakenOnDate: jest.fn()
     };
 
     getCards = new GetCards(mockCardRepository);
