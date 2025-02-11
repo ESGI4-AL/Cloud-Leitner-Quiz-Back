@@ -8,4 +8,8 @@ export interface CardRepository {
   getLastQuizDate(): Promise<Date | null>;
   saveQuizDate(date: Date): Promise<void>;
   hasQuizBeenTakenOnDate(date: Date): Promise<boolean>;
+  compareUserAnswer(
+    cardId: string,
+    userAnswer: string,
+  ): Promise<{ originalAnswer: string; isCorrect: boolean }>;
 }

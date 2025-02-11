@@ -1,6 +1,6 @@
-import { CardRepository } from "src/domain/repositories/card.repository";
-import { GetCards } from "../get-cards.usecase";
-import { Card } from "src/domain/entities/card.entity";
+import { CardRepository } from 'src/domain/repositories/card.repository';
+import { GetCards } from '../get-cards.usecase';
+import { Card } from 'src/domain/entities/card.entity';
 import { Category } from 'src/domain/entities/category.enum';
 
 describe('GetCards', () => {
@@ -10,7 +10,7 @@ describe('GetCards', () => {
   const sampleCards: Card[] = [
     new Card('1', 'user1', 'Q1', 'A1', 'javascript', Category.FIRST),
     new Card('2', 'user2', 'Q2', 'A2', 'python', Category.FIRST),
-    new Card('3', 'user3', 'Q3', 'A3', 'javascript', Category.FIRST)
+    new Card('3', 'user3', 'Q3', 'A3', 'javascript', Category.FIRST),
   ];
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('GetCards', () => {
       findCardsDueForDate: jest.fn(),
       getLastQuizDate: jest.fn(),
       saveQuizDate: jest.fn(),
-      hasQuizBeenTakenOnDate: jest.fn()
+      hasQuizBeenTakenOnDate: jest.fn(),
     };
 
     getCards = new GetCards(mockCardRepository);
@@ -50,7 +50,9 @@ describe('GetCards', () => {
 
     it('should return filtered cards when tags are provided', async () => {
       const tags = ['javascript'];
-      const filteredCards = sampleCards.filter(card => card.tag === 'javascript');
+      const filteredCards = sampleCards.filter(
+        (card) => card.tag === 'javascript',
+      );
       mockCardRepository.findByTags.mockResolvedValue(filteredCards);
 
       const result = await getCards.execute(tags);
@@ -71,7 +73,9 @@ describe('GetCards', () => {
       const error = new Error('Database error');
       mockCardRepository.findByTags.mockRejectedValue(error);
 
-      await expect(getCards.execute(['javascript'])).rejects.toThrow('Database error');
+      await expect(getCards.execute(['javascript'])).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 });
