@@ -22,6 +22,7 @@ describe('GetCards', () => {
       getLastQuizDate: jest.fn(),
       saveQuizDate: jest.fn(),
       hasQuizBeenTakenOnDate: jest.fn(),
+      ompareUserAnswer: jest.fn()
     };
 
     getCards = new GetCards(mockCardRepository);
