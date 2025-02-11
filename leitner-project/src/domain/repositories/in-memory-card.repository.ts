@@ -64,15 +64,17 @@ export class InMemoryCardRepository implements CardRepository {
         return lastQuizDay.getTime() === checkDay.getTime();
     }
 
-    async compareUserAnswer(cardId: string, userAnswer: string): Promise<{ originalAnswer: string, isCorrect: boolean }> {
+    async compareUserAnswer(cardId: string, userAnswer: string, forceValidation: boolean = false): Promise<{ originalAnswer: string, isCorrect: boolean, validated: boolean }> {
         const card = this.cards.find(card => card.id === cardId);
         if (!card) {
             throw new Error("The card was not found");
         }
         
+        const isCorrect = card.answer === userAnswer;
         return {
             originalAnswer: card.answer,
-            isCorrect: card.answer === userAnswer,
+            isCorrect,
+            validated: isCorrect || forceValidation,
         };
     }
 }
