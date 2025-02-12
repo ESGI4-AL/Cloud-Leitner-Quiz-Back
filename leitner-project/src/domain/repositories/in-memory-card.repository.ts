@@ -81,18 +81,22 @@ export class InMemoryCardRepository implements CardRepository {
     const isCorrect = normalize(card.answer) === normalize(userAnswer);
 
     if (isCorrect) {
-      const categoryOrder = [
-        Category.FIRST,
-        Category.SECOND,
-        Category.THIRD,
-        Category.FOURTH,
-        Category.FIFTH,
-        Category.SIXTH,
-        Category.SEVENTH,
-      ];
-      const currentIndex = categoryOrder.indexOf(card.category);
-      if (currentIndex < categoryOrder.length - 1) {
-        card.category = categoryOrder[currentIndex + 1];
+      if (card.category === Category.SEVENTH) {
+        this.cards = this.cards.filter((c) => c.id !== card.id);
+      } else {
+        const categoryOrder = [
+          Category.FIRST,
+          Category.SECOND,
+          Category.THIRD,
+          Category.FOURTH,
+          Category.FIFTH,
+          Category.SIXTH,
+          Category.SEVENTH,
+        ];
+        const currentIndex = categoryOrder.indexOf(card.category);
+        if (currentIndex < categoryOrder.length - 1) {
+          card.category = categoryOrder[currentIndex + 1];
+        }
       }
     } else {
       card.category = Category.FIRST;
@@ -105,4 +109,3 @@ export class InMemoryCardRepository implements CardRepository {
     };
   }
 }
-
