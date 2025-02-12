@@ -70,7 +70,13 @@ export class InMemoryCardRepository implements CardRepository {
             throw new Error("The card was not found");
         }
         
-        const isCorrect = card.answer === userAnswer;
+        const normalize = (str: string) => str.trim().toLowerCase();
+        const isCorrect = normalize(card.answer) === normalize(userAnswer);
+        
+        if (!isCorrect) {
+            card.category = Category.FIRST; // Remettre la carte en catégorie 1 si la réponse est incorrecte
+        }
+
         return {
             originalAnswer: card.answer,
             isCorrect,
