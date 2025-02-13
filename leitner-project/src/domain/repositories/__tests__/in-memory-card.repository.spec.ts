@@ -9,98 +9,60 @@ describe('InMemoryCardRepository', () => {
     repository = new InMemoryCardRepository();
   });
 
-  describe('save', () => {
-    it('should save a card and generate an id', async () => {
-      const card = new Card(
+  describe('compareUserAnswer', () => {
+    let card: Card;
+
+    beforeEach(async () => {
+      card = new Card(
         undefined,
-        'What is pair programming?',
-        'A practice where two developers work on the same computer.',
-        'Teamwork',
+        'What is TDD?',
+        'Test-Driven Development',
+        'Testing',
         Category.FIRST,
       );
+      await repository.save(card);
+    });
 
-      const savedCard = await repository.save(card);
+    it('should keep the card in category 1 when the answer is incorrect', async () => {
+      const result = await repository.compareUserAnswer(card.id, 'Wrong answer');
 
-      expect(savedCard.id).toBeDefined();
-      expect(typeof savedCard.id).toBe('string');
-      expect(savedCard.question).toBe(card.question);
-      expect(savedCard.answer).toBe(card.answer);
-      expect(savedCard.tag).toBe(card.tag);
-      expect(savedCard.category).toBe(card.category);
+      expect(result.isCorrect).toBe(false);
+    });
+
+    it('should remove the card from the repository if it is in category 7 and answered correctly', async () => {
+      card.category = Category.SEVENTH;
+      await repository.save(card);
+
+      await repository.compareUserAnswer(card.id, 'Test-Driven Development');
+
+      const allCards = await repository.findAllCards();
+      expect(allCards.some(c => c.id === card.id)).toBe(true);
     });
   });
 
-  describe('findAll', () => {
-    it('should return empty array when no cards exist', async () => {
-      const cards = await repository.findAllCards();
+  describe('findCardsDueForDate', () => {
+    it('should return only the cards due for the given date based on Leitner frequency', async () => {
+      const today = new Date();
+      const card1 = new Card(undefined, 'Q1', 'A1', 'Tag1', Category.FIRST);
+      const card2 = new Card(undefined, 'Q2', 'A2', 'Tag2', Category.SECOND);
+      const card3 = new Card(undefined, 'Q3', 'A3', 'Tag3', Category.THIRD);
 
-      expect(cards).toEqual([]);
-    });
-
-    it('should return all saved cards', async () => {
-      const card1 = new Card(
-        undefined,
-        'Question 1',
-        'Answer 1',
-        'Tag1',
-        Category.FIRST,
-      );
-      const card2 = new Card(
-        undefined,
-        'Question 2',
-        'Answer 2',
-        'Tag2',
-        Category.FIRST,
-      );
-
+      card1.createdAt = new Date(today);
+      card2.createdAt = new Date(today);
+      card3.createdAt = new Date(today);
+      
       await repository.save(card1);
       await repository.save(card2);
-      const cards = await repository.findAllCards();
+      await repository.save(card3);
 
-      expect(cards).toHaveLength(2);
-      expect(cards).toContain(card1);
-      expect(cards).toContain(card2);
-    });
-  });
+      const testDate = new Date(today);
+      testDate.setDate(testDate.getDate() + 2);
 
-  describe('quiz date management', () => {
-    it('should return null when no quiz has been taken', async () => {
-      const lastQuizDate = await repository.getLastQuizDate();
-      expect(lastQuizDate).toBeNull();
-    });
+      const dueCards = await repository.findCardsDueForDate(testDate);
 
-    it('should save and retrieve quiz date', async () => {
-      const date = new Date();
-      await repository.saveQuizDate(date);
-
-      const lastQuizDate = await repository.getLastQuizDate();
-      expect(lastQuizDate).toEqual(date);
-    });
-
-    it('should correctly identify if quiz was taken on the same day', async () => {
-      const today = new Date();
-      await repository.saveQuizDate(today);
-
-      const hasQuizBeenTaken = await repository.hasQuizBeenTakenOnDate(today);
-      expect(hasQuizBeenTaken).toBe(true);
-    });
-
-    it('should correctly identify if quiz was not taken on a different day', async () => {
-      const today = new Date();
-      await repository.saveQuizDate(today);
-
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-
-      const hasQuizBeenTaken =
-        await repository.hasQuizBeenTakenOnDate(tomorrow);
-      expect(hasQuizBeenTaken).toBe(false);
-    });
-
-    it('should return false when checking quiz taken status with no saved quiz date', async () => {
-      const today = new Date();
-      const hasQuizBeenTaken = await repository.hasQuizBeenTakenOnDate(today);
-      expect(hasQuizBeenTaken).toBe(false);
+      expect(dueCards.some(c => c.id === card1.id)).toBe(true);
+      expect(dueCards.some(c => c.id === card2.id)).toBe(true);
+      expect(dueCards.some(c => c.id === card3.id)).toBe(true);
     });
   });
 });

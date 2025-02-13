@@ -11,5 +11,5 @@ export interface CardRepository {
   compareUserAnswer(
     cardId: string,
     userAnswer: string,
-  ): Promise<{ originalAnswer: string; isCorrect: boolean }>;
+  ): Promise<{ originalAnswer: string; isCorrect: boolean; validated: boolean }>;
 }
