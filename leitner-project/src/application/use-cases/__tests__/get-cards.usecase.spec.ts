@@ -22,10 +22,11 @@ describe('GetCards', () => {
       getLastQuizDate: jest.fn(),
       saveQuizDate: jest.fn(),
       hasQuizBeenTakenOnDate: jest.fn(),
-      compareUserAnswer: jest.fn()
-    };
+      compareUserAnswer: jest.fn(),
+      findById: jest.fn(),  // Correction ici
+    } as unknown as jest.Mocked<CardRepository>;
 
-    getCards = new GetCards(mockCardRepository);
+    getCards = new GetCards(mockCardRepository);  // Réinitialisation de getCards
   });
 
   describe('execute', () => {

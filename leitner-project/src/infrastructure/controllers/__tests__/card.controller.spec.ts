@@ -5,6 +5,7 @@ import { Card } from 'src/domain/entities/card.entity';
 import { Category } from 'src/domain/entities/category.enum';
 import { CardController } from '../card.controller';
 import { GetQuizz } from 'src/application/use-cases/get-quizz.usecase';
+import { AnswerCard } from 'src/application/use-cases/answer-card.usecase'; 
 
 describe('CardController', () => {
   let controller: CardController;
@@ -19,6 +20,7 @@ describe('CardController', () => {
           useValue: {
             execute: jest.fn(),
           },
+          
         },
         {
           provide: GetCards,
@@ -32,6 +34,10 @@ describe('CardController', () => {
             execute: jest.fn(),
           },
         },
+        {
+          provide: AnswerCard,
+          useValue: { execute: jest.fn() },
+          },
       ],
     }).compile();
 

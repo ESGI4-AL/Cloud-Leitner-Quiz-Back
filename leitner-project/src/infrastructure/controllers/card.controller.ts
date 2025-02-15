@@ -1,21 +1,40 @@
-import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Post, Query } from "@nestjs/common";
-import { CreateCard } from "src/application/use-cases/create-card.usecase";
-import { GetCards } from "src/application/use-cases/get-cards.usecase";
-import { GetQuizz } from "src/application/use-cases/get-quizz.usecase";
-import { Card } from "src/domain/entities/card.entity";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Post,
+  Query,
+  Patch,
+  Param,
+} from '@nestjs/common';
+import { CreateCard } from 'src/application/use-cases/create-card.usecase';
+import { GetCards } from 'src/application/use-cases/get-cards.usecase';
+import { GetQuizz } from 'src/application/use-cases/get-quizz.usecase';
+import { AnswerCard } from 'src/application/use-cases/answer-card.usecase';
+import { Card } from 'src/domain/entities/card.entity';
 
 @Controller('cards')
 export class CardController {
-	constructor(
+  constructor(
     private readonly createCardUseCase: CreateCard,
     private readonly getCardsUseCase: GetCards,
-    private readonly getQuizzUseCase: GetQuizz
+    private readonly getQuizzUseCase: GetQuizz,
+    private readonly answerCardUseCase: AnswerCard,
   ) {}
 
-	@Post()
-  async createCard(@Body() body: { question: string; answer: string; tag: string }) {
+  @Post()
+  async createCard(
+    @Body() body: { question: string; answer: string; tag: string },
+  ) {
     const DEFAULT_USER_ID = 'default-user-id';
-    return this.createCardUseCase.execute(DEFAULT_USER_ID, body.question, body.answer, body.tag);
+    return this.createCardUseCase.execute(
+      DEFAULT_USER_ID,
+      body.question,
+      body.answer,
+      body.tag,
+    );
   }
 
   @Get()
