@@ -67,4 +67,25 @@ export class CardController {
       throw new InternalServerErrorException('Failed to get quiz cards');
     }
   }
+
+  @Patch(':cardId/answer')
+  async answerCard(
+    @Param('cardId') cardId: string,
+    @Body() body: { isValid: boolean },
+  ): Promise<void> {
+    if (typeof body.isValid !== 'boolean') {
+      throw new BadRequestException(
+        'Invalid request body: isValid must be a boolean',
+      );
+    }
+
+    try {
+      await this.answerCardUseCase.execute(cardId, body.isValid);
+    } catch (error) {
+      if (error.message === 'Card not found') {
+        throw new BadRequestException(error.message);
+      }
+      throw new InternalServerErrorException('Failed to answer the card');
+    }
+  }
 }
