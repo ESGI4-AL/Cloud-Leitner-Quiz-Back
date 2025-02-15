@@ -20,6 +20,10 @@ export class InMemoryCardRepository implements CardRepository {
     return this.cards;
   }
   
+  async findById(cardId: string): Promise<Card | null> {
+    const card = this.cards.find((c) => c.id === cardId);
+    return card || null;
+  }
   async findByTags(tags: string[]): Promise<Card[]> {
     return this.cards.filter((card) => card.tag && tags.includes(card.tag));
   }
