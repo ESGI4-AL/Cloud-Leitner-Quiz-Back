@@ -16,31 +16,34 @@ describe('Card', () => {
     expect(card.answer).toBe(answer);
     expect(card.tag).toBe(tag);
     expect(card.category).toBe(category);
-    expect(card.id).toBeDefined();
+    expect(card.id).toBeUndefined();
     expect(card.userId).toBe(userId);
+    expect(card.createdAt).toBeInstanceOf(Date);
   });
 
-  it('should set a default category to FIRST when not provided', () => {
-    const id = undefined;
-    const userId = 'default-user-id';
+  it('should set default values when not provided', () => {
     const question = 'Some question';
     const answer = 'Some answer';
     const tag = 'Some tag';
 
-    const card = new Card(id, userId, question, answer, tag);
+    const card = new Card(undefined, undefined, question, answer, tag);
 
     expect(card.category).toBe(Category.FIRST);
+    expect(card.userId).toBe('default-user-id');
+    expect(card.id).toBeUndefined();
+    expect(card.createdAt).toBeInstanceOf(Date);
   });
 
   it('should reset the category to FIRST when resetCategory is called', () => {
-    const id = undefined;
-    const userId = 'default-user-id';
-    const question = 'Some question';
-    const answer = 'Some answer';
-    const tag = 'Some tag';
-    const category = Category.SECOND;
+    const card = new Card(
+      undefined,
+      'default-user-id',
+      'Some question',
+      'Some answer',
+      'Some tag',
+      Category.SECOND
+    );
 
-    const card = new Card(id, userId, question, answer, tag, category);
     card.resetCategory();
 
     expect(card.category).toBe(Category.FIRST);
@@ -59,6 +62,22 @@ describe('Card', () => {
     expect(card.answer).toBe(answer);
     expect(card.tag).toBe(tag);
     expect(card.category).toBe(Category.FIRST);
-    expect(card.id).toBeDefined();
+    expect(card.id).toBeUndefined();
+    expect(card.createdAt).toBeInstanceOf(Date);
+  });
+
+  it('should use the current date as createdAt by default', () => {
+    const before = new Date();
+    const card = new Card(
+      undefined,
+      'default-user-id',
+      'question',
+      'answer',
+      'tag'
+    );
+    const after = new Date();
+
+    expect(card.createdAt.getTime()).toBeGreaterThanOrEqual(before.getTime());
+    expect(card.createdAt.getTime()).toBeLessThanOrEqual(after.getTime());
   });
 });
