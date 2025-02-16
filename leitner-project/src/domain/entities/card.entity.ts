@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export class Card {
   constructor(
-    public id: string = uuidv4(),
+    public id: string | undefined = undefined,
     public userId: string = 'default-user-id',
     public question: string,
     public answer: string,
@@ -19,7 +19,7 @@ export class Card {
     tag: string,
   ): Card {
     return new Card(
-      uuidv4(),
+      undefined,
       userId,
       question,
       answer,
