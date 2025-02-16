@@ -8,6 +8,7 @@ import {
   Query,
   Patch,
   Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateCard } from 'src/application/use-cases/create-card.usecase';
 import { GetCards } from 'src/application/use-cases/get-cards.usecase';
@@ -61,9 +62,10 @@ export class CardController {
     try {
       return await this.getQuizzUseCase.execute(date);
     } catch (error) {
-      if (error.message === 'You can only take one quiz per day') {
+      /*if (error.message === 'You can only take one quiz per day') {
         throw new BadRequestException(error.message);
       }
+      throw new InternalServerErrorException('Failed to get quiz cards');*/
       throw new InternalServerErrorException('Failed to get quiz cards');
     }
   }
@@ -73,7 +75,7 @@ export class CardController {
     @Param('cardId') cardId: string,
     @Body() body: { isValid: boolean },
   ): Promise<void> {
-    if (typeof body.isValid !== 'boolean') {
+    if (body === undefined || typeof body.isValid !== 'boolean') {
       throw new BadRequestException(
         'Invalid request body: isValid must be a boolean',
       );
@@ -81,9 +83,10 @@ export class CardController {
 
     try {
       await this.answerCardUseCase.execute(cardId, body.isValid);
+      return;
     } catch (error) {
       if (error.message === 'Card not found') {
-        throw new BadRequestException(error.message);
+        throw new NotFoundException(error.message);
       }
       throw new InternalServerErrorException('Failed to answer the card');
     }

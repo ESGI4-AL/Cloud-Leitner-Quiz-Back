@@ -8,18 +8,26 @@ export class InMemoryCardRepository implements CardRepository {
   private lastQuizDate: Date | null = null;
 
   async save(card: Card): Promise<Card> {
-    card.id = uuidv4();
-    if (!card.createdAt) {
-      card.createdAt = new Date();
+    if (!card.id) {
+      card.id = uuidv4();
+      this.cards.push(card);
+      return card;
     }
-    this.cards.push(card);
-    return card;
+
+    // mettre à jour les cartes
+    const index = this.cards.findIndex(c => c.id === card.id);
+    if (index === -1) {
+      throw new Error('Card not found for update');
+    }
+
+    this.cards[index] = card;
+    return this.cards[index];
   }
 
   async findAllCards(): Promise<Card[]> {
     return this.cards;
   }
-  
+
   async findById(cardId: string): Promise<Card | null> {
     const card = this.cards.find((c) => c.id === cardId);
     return card || null;
