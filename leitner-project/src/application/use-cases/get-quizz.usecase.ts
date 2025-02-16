@@ -14,10 +14,6 @@ export class GetQuizz {
     if (lastQuizDate) {
       const lastQuizDay = new Date(lastQuizDate);
       lastQuizDay.setHours(0, 0, 0, 0);
-
-      if (lastQuizDay.getTime() === quizzDate.getTime()) {
-        throw new Error('You can only take one quiz per day');
-      }
     }
 
     await this.cardRepository.saveQuizDate(quizzDate);

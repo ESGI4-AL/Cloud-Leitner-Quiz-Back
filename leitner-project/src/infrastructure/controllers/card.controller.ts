@@ -62,10 +62,6 @@ export class CardController {
     try {
       return await this.getQuizzUseCase.execute(date);
     } catch (error) {
-      /*if (error.message === 'You can only take one quiz per day') {
-        throw new BadRequestException(error.message);
-      }
-      throw new InternalServerErrorException('Failed to get quiz cards');*/
       throw new InternalServerErrorException('Failed to get quiz cards');
     }
   }
