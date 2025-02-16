@@ -14,10 +14,9 @@ export class AnswerCard {
 
     if (isValid) {
       if (card.category === Category.SEVENTH) {
-        // Suppression si la carte est dans la dernière catégorie
         return;
       }
-      // Passage à la catégorie suivante
+   
       const categoryOrder: Category[] = [
         Category.FIRST,
         Category.SECOND,
@@ -32,7 +31,6 @@ export class AnswerCard {
         card.category = categoryOrder[currentIndex + 1];
       }
     } else {
-      // Réinitialisation à la première catégorie
       card.category = Category.FIRST;
     }
 

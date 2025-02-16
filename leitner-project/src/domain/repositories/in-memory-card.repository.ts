@@ -14,7 +14,6 @@ export class InMemoryCardRepository implements CardRepository {
       return card;
     }
 
-    // mettre à jour les cartes
     const index = this.cards.findIndex(c => c.id === card.id);
     if (index === -1) {
       throw new Error('Card not found for update');
